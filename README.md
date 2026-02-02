@@ -97,6 +97,44 @@ gh auth login    # GitHub authentication
 az login         # Azure authentication (use --use-device-code for remote)
 ```
 
+## Using VM as VS Code Remote Backend
+
+### Setup Remote SSH Connection
+
+1. **Add VM to SSH config** (on your laptop):
+   ```bash
+   # Edit your SSH config
+   nano ~/.ssh/config
+   
+   # Add the following entry:
+   Host devbox
+       HostName <FQDN from deployment>
+       User azureuser
+       IdentityFile ~/.ssh/id_rsa
+   ```
+
+2. **Install VS Code Remote - SSH extension** (on your laptop):
+   - Open VS Code on your laptop
+   - Install the "Remote - SSH" extension by Microsoft
+   - Press `F1` and select "Remote-SSH: Connect to Host..."
+   - Select `devbox` from the list
+   - VS Code will connect to the VM and install the VS Code Server automatically
+
+3. **Start coding**:
+   - Once connected, VS Code runs on your laptop but executes code on the VM
+   - Open folders on the remote VM: `File > Open Folder`
+   - Install extensions on the remote VM as needed
+   - Terminal in VS Code runs on the VM
+   - All IntelliSense, debugging, and git operations run on the VM
+
+### Tips for Remote Development
+
+- **Port Forwarding**: VS Code automatically forwards ports from the VM to your laptop
+- **Extensions**: Install extensions in the remote context (they'll show "Install in SSH: devbox")
+- **Settings Sync**: Enable Settings Sync to keep your extensions and preferences across machines
+- **Performance**: The VM processes everything; your laptop only handles UI rendering
+- **Tunneling Alternative**: You can also use `code-insiders tunnel` on the VM for connection without SSH port forwarding
+
 ## Clean Up
 
 ```bash
