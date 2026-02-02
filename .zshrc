@@ -1,8 +1,21 @@
+# Disable terminal color queries in tmux to prevent escape sequences
+if [[ -n "$TMUX" ]]; then
+  unset COLORTERM
+  export TERM=screen-256color
+fi
+
+# Disable background color query to prevent escape sequences
+POWERLEVEL9K_TERM_SHELL_INTEGRATION=true
+typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
+
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+  # Skip instant prompt in tmux to avoid escape sequence issues
+  if [[ -z "$TMUX" ]]; then
+    source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+  fi
 fi
 
 # If you come from bash you might have to change your $PATH.
@@ -128,3 +141,8 @@ export NVM_DIR="$HOME/.nvm"
 # Load local environment if exists
 [ -f "$HOME/.local/bin/env" ] && . "$HOME/.local/bin/env"
 
+
+# Prevent color queries in tmux
+if [[ -n "$TMUX" ]]; then
+    unset COLORTERM
+fi
