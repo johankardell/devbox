@@ -53,7 +53,28 @@ sudo apt-get install -y \
     build-essential \
     ca-certificates \
     gnupg \
-    lsb-release
+    lsb-release \
+    unzip \
+    jq
+
+# Install kubectl
+echo "Installing kubectl..."
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+rm kubectl
+
+# Install kubectx and kubens
+echo "Installing kubectx and kubens..."
+sudo wget https://raw.githubusercontent.com/ahmetb/kubectx/master/kubectx -O /usr/local/bin/kubectx
+sudo wget https://raw.githubusercontent.com/ahmetb/kubectx/master/kubens -O /usr/local/bin/kubens
+sudo chmod +x /usr/local/bin/kubectx /usr/local/bin/kubens
+
+# Install OpenTofu (Terraform alternative)
+echo "Installing OpenTofu..."
+curl --proto '=https' --tlsv1.2 -fsSL https://get.opentofu.org/install-opentofu.sh -o install-opentofu.sh
+chmod +x install-opentofu.sh
+./install-opentofu.sh --install-method deb
+rm install-opentofu.sh
 
 # Clean up
 echo "Cleaning up..."
@@ -68,6 +89,9 @@ echo ""
 echo "Installed tools:"
 echo "  - tmux $(tmux -V)"
 echo "  - git $(git --version)"
+echo "  - kubectl $(kubectl version --client -o json 2>/dev/null | jq -r '.clientVersion.gitVersion' || echo 'installed')"
+echo "  - kubectx and kubens"
+echo "  - OpenTofu (terraform alias)"
 echo "  - Azure CLI $(az version --output tsv --query '\"azure-cli\"' 2>/dev/null || echo 'installed')"
 echo "  - GitHub CLI $(gh --version | head -1)"
 echo "  - GitHub Copilot CLI (gh copilot)"
