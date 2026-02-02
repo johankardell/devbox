@@ -72,8 +72,8 @@ ssh azureuser@<fqdn>
 Once connected to the VM, run the setup script to install development tools:
 
 ```bash
-# Copy the install script to the VM
-scp install.sh azureuser@<fqdn>:~/
+# Copy the install script and zsh configs to the VM
+scp install.sh .zshrc .p10k.zsh azureuser@<fqdn>:~/
 
 # SSH into the VM
 ssh azureuser@<fqdn>
@@ -81,20 +81,26 @@ ssh azureuser@<fqdn>
 # Run the installation script
 chmod +x install.sh
 ./install.sh
+
+# Logout and login again to start using zsh
+exit
+ssh azureuser@<fqdn>
 ```
 
 The script installs:
+- **zsh**: Modern shell with Oh My Zsh and Powerlevel10k theme
 - **tmux**: Terminal multiplexer
 - **git**: Version control
 - **Azure CLI**: Azure management
-- **GitHub CLI**: GitHub integration
-- **GitHub Copilot CLI**: AI-powered CLI assistant
+- **GitHub CLI**: GitHub integration with built-in Copilot support
 - **VS Code Insiders**: Latest VS Code editor
+
+Your local zsh configuration (aliases, plugins, theme) will be replicated on the VM.
 
 After installation, authenticate with:
 ```bash
-gh auth login    # GitHub authentication
-az login         # Azure authentication (use --use-device-code for remote)
+gh auth login             # GitHub authentication (includes Copilot access)
+az login --use-device-code # Azure authentication (use device code for remote)
 ```
 
 ## Using VM as VS Code Remote Backend

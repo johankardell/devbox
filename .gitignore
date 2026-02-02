@@ -1,0 +1,16 @@
+# Azure build artifacts
+main.json
+
+# SSH keys
+*.pem
+*.key
+id_rsa*
+
+# Environment files
+.env
+*.env
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/

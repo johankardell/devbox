@@ -10,6 +10,10 @@ echo "Updating system packages..."
 sudo apt-get update
 sudo apt-get upgrade -y
 
+# Install zsh
+echo "Installing zsh..."
+sudo apt-get install -y zsh
+
 # Install tmux
 echo "Installing tmux..."
 sudo apt-get install -y tmux
@@ -17,6 +21,35 @@ sudo apt-get install -y tmux
 # Install git
 echo "Installing git..."
 sudo apt-get install -y git
+
+# Install Oh My Zsh
+echo "Installing Oh My Zsh..."
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+
+# Install Powerlevel10k theme
+echo "Installing Powerlevel10k theme..."
+git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
+
+# Install zsh plugins
+echo "Installing zsh plugins..."
+git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+
+# Copy zsh configuration files
+echo "Setting up zsh configuration..."
+if [ -f .zshrc ]; then
+    cp .zshrc ~/.zshrc
+    echo "✓ Copied .zshrc"
+fi
+
+if [ -f .p10k.zsh ]; then
+    cp .p10k.zsh ~/.p10k.zsh
+    echo "✓ Copied .p10k.zsh"
+fi
+
+# Change default shell to zsh
+echo "Setting zsh as default shell..."
+sudo chsh -s $(which zsh) $USER
 
 # Install Azure CLI
 echo "Installing Azure CLI..."
@@ -32,9 +65,8 @@ echo "Installing GitHub CLI..."
 && sudo apt update \
 && sudo apt install gh -y
 
-# Install GitHub Copilot CLI
-echo "Installing GitHub Copilot CLI..."
-gh extension install github/gh-copilot
+# GitHub Copilot is now built into gh CLI (gh copilot commands)
+# No separate extension installation needed
 
 # Install Visual Studio Code Insiders
 echo "Installing Visual Studio Code Insiders..."
@@ -66,16 +98,18 @@ echo "Installation Complete!"
 echo "===================================="
 echo ""
 echo "Installed tools:"
+echo "  - zsh with Oh My Zsh and Powerlevel10k"
 echo "  - tmux $(tmux -V)"
 echo "  - git $(git --version)"
 echo "  - Azure CLI $(az version --output tsv --query '\"azure-cli\"' 2>/dev/null || echo 'installed')"
 echo "  - GitHub CLI $(gh --version | head -1)"
-echo "  - GitHub Copilot CLI (gh copilot)"
+echo "  - GitHub Copilot (gh copilot) - built into gh CLI"
 echo "  - VS Code Insiders (code-insiders)"
 echo ""
 echo "Next steps:"
-echo "  1. Authenticate with GitHub: gh auth login"
-echo "  2. Authenticate with Azure: az login"
-echo "  3. Configure git: git config --global user.name 'Your Name'"
-echo "  4. Configure git: git config --global user.email 'your@email.com'"
+echo "  1. Logout and login again (or run: exec zsh) to use zsh"
+echo "  2. Authenticate with GitHub: gh auth login"
+echo "  3. Authenticate with Azure: az login --use-device-code"
+echo "  4. Configure git: git config --global user.name 'Your Name'"
+echo "  5. Configure git: git config --global user.email 'your@email.com'"
 echo ""
