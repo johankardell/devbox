@@ -164,23 +164,6 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-03-01' = {
   }
 }
 
-resource autoShutdown 'Microsoft.DevTestLab/schedules@2018-09-15' = {
-  name: 'shutdown-computevm-${vmName}'
-  location: location
-  properties: {
-    status: 'Enabled'
-    taskType: 'ComputeVmShutdownTask'
-    dailyRecurrence: {
-      time: '2000'
-    }
-    timeZoneId: 'W. Europe Standard Time'
-    notificationSettings: {
-      status: 'Disabled'
-    }
-    targetResourceId: vm.id
-  }
-}
-
 output vmId string = vm.id
 output vmName string = vm.name
 output publicIPAddress string = publicIP.properties.ipAddress
