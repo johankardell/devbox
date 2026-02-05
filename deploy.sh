@@ -3,6 +3,14 @@ set -e
 
 RESOURCE_GROUP="rg-linux-devbox"
 LOCATION="swedencentral"
+SUBSCRIPTION_NAME="two"
+
+echo "Getting subscription ID for '$SUBSCRIPTION_NAME'..."
+SUBSCRIPTION_ID=$(az account list --query "[?name=='$SUBSCRIPTION_NAME'].id" -o tsv)
+if [ -z "$SUBSCRIPTION_ID" ]; then
+    echo "Error: Subscription '$SUBSCRIPTION_NAME' not found"
+    exit 1
+fi
 
 if [ -z "$SSH_PUBLIC_KEY" ]; then
     if [ -f ~/.ssh/id_rsa.pub ]; then
@@ -27,13 +35,14 @@ if [ -z "$ALLOWED_SOURCE_IP" ]; then
 fi
 
 echo "Creating resource group..."
-az group create --name $RESOURCE_GROUP --location $LOCATION
+az group create --name $RESOURCE_GROUP --location $LOCATION --subscription $SUBSCRIPTION_ID
 
 echo "Deploying Bicep template..."
 az deployment group create \
     --resource-group $RESOURCE_GROUP \
     --template-file main.bicep \
     --parameters main.bicepparam \
+    --subscription $SUBSCRIPTION_ID \
     --output none
 
 echo ""
@@ -46,6 +55,7 @@ echo "Retrieving VM details..."
 DEPLOYMENT_OUTPUT=$(az deployment group show \
     --resource-group $RESOURCE_GROUP \
     --name main \
+    --subscription $SUBSCRIPTION_ID \
     --query properties.outputs \
     --output json)
 
