@@ -54,7 +54,7 @@ else
         --name "$RULE_NAME" \
         --priority 1000 \
         --source-address-prefixes "$CNET" \
-        --destination-port-ranges 22 \
+        --destination-port-ranges 9090 \
         --access Allow \
         --protocol Tcp \
         --subscription "$SUBSCRIPTION_ID"

@@ -17,6 +17,21 @@ param vmSize string = 'Standard_B4as_v2'
 @description('VM name')
 param vmName string = 'vm-linux-devbox'
 
+var cloudInitScript = base64('''#cloud-config
+write_files:
+  - path: /etc/systemd/system/ssh.socket.d/override.conf
+    content: |
+      [Socket]
+      ListenStream=
+      ListenStream=0.0.0.0:22
+      ListenStream=[::]:22
+      ListenStream=0.0.0.0:9090
+      ListenStream=[::]:9090
+runcmd:
+  - systemctl daemon-reload
+  - systemctl restart ssh.socket
+''')
+
 var vnetName = 'vnet-${vmName}'
 var subnetName = 'subnet-default'
 var nicName = 'nic-${vmName}'
@@ -39,7 +54,7 @@ resource nsg 'Microsoft.Network/networkSecurityGroups@2023-11-01' = {
           sourceAddressPrefix: allowedSourceIP
           sourcePortRange: '*'
           destinationAddressPrefix: '*'
-          destinationPortRange: '22'
+          destinationPortRange: '9090'
         }
       }
       {
@@ -142,6 +157,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-03-01' = {
     osProfile: {
       computerName: vmName
       adminUsername: adminUsername
+      customData: cloudInitScript
       linuxConfiguration: {
         disablePasswordAuthentication: true
         ssh: {
@@ -168,4 +184,4 @@ output vmId string = vm.id
 output vmName string = vm.name
 output publicIPAddress string = publicIP.properties.ipAddress
 output fqdn string = publicIP.properties.dnsSettings.fqdn
-output sshCommand string = 'ssh ${adminUsername}@${publicIP.properties.dnsSettings.fqdn}'
+output sshCommand string = 'ssh -p 9090 ${adminUsername}@${publicIP.properties.dnsSettings.fqdn}'

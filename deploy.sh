@@ -72,20 +72,20 @@ echo "  $SSH_COMMAND"
 echo ""
 
 echo "Copying configuration files to VM..."
-VM_HOST="${SSH_COMMAND#ssh }"
+VM_HOST="${SSH_COMMAND##* }"
 
 # Copy SSH keys for GitHub authentication
 if [ -f ~/.ssh/id_rsa ] && [ -f ~/.ssh/id_rsa.pub ]; then
     echo "  - Copying SSH keys..."
-    scp ~/.ssh/id_rsa ~/.ssh/id_rsa.pub "$VM_HOST:~/.ssh/"
-    ssh "$VM_HOST" "chmod 600 ~/.ssh/id_rsa && chmod 644 ~/.ssh/id_rsa.pub"
+    scp -P 9090 ~/.ssh/id_rsa ~/.ssh/id_rsa.pub "$VM_HOST:~/.ssh/"
+    ssh -p 9090 "$VM_HOST" "chmod 600 ~/.ssh/id_rsa && chmod 644 ~/.ssh/id_rsa.pub"
 else
     echo "  - Warning: SSH keys not found, skipping..."
 fi
 
 # Copy configuration files
 echo "  - Copying configuration files..."
-scp install.sh .zshrc .p10k.zsh .tmux.conf "$VM_HOST:~/"
+scp -P 9090 install.sh .zshrc .p10k.zsh .tmux.conf "$VM_HOST:~/"
 
 echo ""
 echo "Files copied successfully!"
