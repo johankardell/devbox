@@ -32,4 +32,4 @@ if [ -z "$PUBLIC_IP" ]; then
 fi
 
 echo "Connecting to $USERNAME@$PUBLIC_IP..."
-ssh "$USERNAME@$PUBLIC_IP" "$@"
+ssh -p 9090 "$USERNAME@$PUBLIC_IP" "$@"
