@@ -69,6 +69,12 @@ rm -f packages.microsoft.gpg
 sudo apt-get update
 sudo apt-get install -y code-insiders
 
+# Install Neovim (latest stable from PPA)
+echo "Installing Neovim..."
+sudo add-apt-repository -y ppa:neovim-ppa/stable
+sudo apt-get update
+sudo apt-get install -y neovim
+
 # Install NVM and Node.js
 echo "Installing NVM..."
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
@@ -130,6 +136,7 @@ echo "  - krew (kubectl plugin manager)"
 echo "  - OpenTofu (terraform alias)"
 echo "  - Azure CLI $(az version --output tsv --query '\"azure-cli\"' 2>/dev/null || echo 'installed')"
 echo "  - GitHub CLI $(gh --version | head -1)"
+echo "  - Neovim $(nvim --version | head -1)"
 echo "  - GitHub Copilot CLI (copilot)"
 echo "  - VS Code Insiders (code-insiders)"
 echo ""

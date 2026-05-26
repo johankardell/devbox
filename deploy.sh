@@ -87,6 +87,11 @@ fi
 echo "  - Copying configuration files..."
 scp -P 9090 install.sh .zshrc .p10k.zsh .tmux.conf "$VM_HOST:~/"
 
+# Copy Neovim configuration
+echo "  - Copying Neovim configuration..."
+ssh -p 9090 "$VM_HOST" "mkdir -p ~/.config/nvim/lua/config ~/.config/nvim/lua/plugins"
+scp -P 9090 -r nvim/* nvim/.neoconf.json "$VM_HOST:~/.config/nvim/"
+
 echo ""
 echo "Files copied successfully!"
 echo ""
