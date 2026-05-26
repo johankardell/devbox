@@ -34,7 +34,7 @@ echo "Installing GitHub CLI..."
 
 # Install GitHub Copilot CLI
 echo "Installing GitHub Copilot CLI..."
-gh extension install github/gh-copilot
+curl -fsSL https://gh.io/copilot-install | sudo bash
 
 # Install Visual Studio Code Insiders
 echo "Installing Visual Studio Code Insiders..."
@@ -94,7 +94,7 @@ echo "  - kubectx and kubens"
 echo "  - OpenTofu (terraform alias)"
 echo "  - Azure CLI $(az version --output tsv --query '\"azure-cli\"' 2>/dev/null || echo 'installed')"
 echo "  - GitHub CLI $(gh --version | head -1)"
-echo "  - GitHub Copilot CLI (gh copilot)"
+echo "  - GitHub Copilot CLI (copilot)"
 echo "  - VS Code Insiders (code-insiders)"
 echo ""
 echo "Next steps:"
