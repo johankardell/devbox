@@ -39,7 +39,7 @@ var nsgName = 'nsg-${vmName}'
 var publicIPName = 'pip-${vmName}'
 var osDiskName = '${vmName}-osdisk'
 
-resource nsg 'Microsoft.Network/networkSecurityGroups@2023-11-01' = {
+resource nsg 'Microsoft.Network/networkSecurityGroups@2025-05-01' = {
   name: nsgName
   location: location
   properties: {
@@ -74,7 +74,7 @@ resource nsg 'Microsoft.Network/networkSecurityGroups@2023-11-01' = {
   }
 }
 
-resource vnet 'Microsoft.Network/virtualNetworks@2023-11-01' = {
+resource vnet 'Microsoft.Network/virtualNetworks@2025-05-01' = {
   name: vnetName
   location: location
   properties: {
@@ -97,7 +97,7 @@ resource vnet 'Microsoft.Network/virtualNetworks@2023-11-01' = {
   }
 }
 
-resource publicIP 'Microsoft.Network/publicIPAddresses@2023-11-01' = {
+resource publicIP 'Microsoft.Network/publicIPAddresses@2025-05-01' = {
   name: publicIPName
   location: location
   sku: {
@@ -111,7 +111,7 @@ resource publicIP 'Microsoft.Network/publicIPAddresses@2023-11-01' = {
   }
 }
 
-resource nic 'Microsoft.Network/networkInterfaces@2023-11-01' = {
+resource nic 'Microsoft.Network/networkInterfaces@2025-05-01' = {
   name: nicName
   location: location
   properties: {
@@ -132,7 +132,7 @@ resource nic 'Microsoft.Network/networkInterfaces@2023-11-01' = {
   }
 }
 
-resource vm 'Microsoft.Compute/virtualMachines@2024-03-01' = {
+resource vm 'Microsoft.Compute/virtualMachines@2025-11-01' = {
   name: vmName
   location: location
   properties: {

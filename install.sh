@@ -10,13 +10,37 @@ echo "Updating system packages..."
 sudo apt-get update
 sudo apt-get upgrade -y
 
-# Install tmux
-echo "Installing tmux..."
-sudo apt-get install -y tmux
+# Install essential packages
+echo "Installing essential packages..."
+sudo apt-get install -y \
+    zsh \
+    tmux \
+    git \
+    curl \
+    wget \
+    build-essential \
+    ca-certificates \
+    gnupg \
+    lsb-release \
+    unzip \
+    jq
 
-# Install git
-echo "Installing git..."
-sudo apt-get install -y git
+# Install Oh My Zsh
+echo "Installing Oh My Zsh..."
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+
+# Install Powerlevel10k theme
+echo "Installing Powerlevel10k..."
+git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k"
+
+# Install zsh plugins
+echo "Installing zsh plugins..."
+git clone https://github.com/zsh-users/zsh-autosuggestions "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-autosuggestions"
+git clone https://github.com/zsh-users/zsh-syntax-highlighting "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting"
+
+# Set zsh as default shell
+echo "Setting zsh as default shell..."
+sudo chsh -s $(which zsh) $(whoami)
 
 # Install Azure CLI
 echo "Installing Azure CLI..."
@@ -45,17 +69,13 @@ rm -f packages.microsoft.gpg
 sudo apt-get update
 sudo apt-get install -y code-insiders
 
-# Install useful development tools
-echo "Installing additional development tools..."
-sudo apt-get install -y \
-    curl \
-    wget \
-    build-essential \
-    ca-certificates \
-    gnupg \
-    lsb-release \
-    unzip \
-    jq
+# Install NVM and Node.js
+echo "Installing NVM..."
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+echo "Installing Node.js LTS..."
+nvm install --lts
 
 # Install kubectl
 echo "Installing kubectl..."
@@ -68,6 +88,18 @@ echo "Installing kubectx and kubens..."
 sudo wget https://raw.githubusercontent.com/ahmetb/kubectx/master/kubectx -O /usr/local/bin/kubectx
 sudo wget https://raw.githubusercontent.com/ahmetb/kubectx/master/kubens -O /usr/local/bin/kubens
 sudo chmod +x /usr/local/bin/kubectx /usr/local/bin/kubens
+
+# Install krew (kubectl plugin manager)
+echo "Installing krew..."
+(
+  set -x; cd "$(mktemp -d)" &&
+  OS="$(uname | tr '[:upper:]' '[:lower:]')" &&
+  ARCH="$(uname -m | sed -e 's/x86_64/amd64/' -e 's/aarch64/arm64/')" &&
+  KREW="krew-${OS}_${ARCH}" &&
+  curl -fsSLO "https://github.com/kubernetes-sigs/krew/releases/latest/download/${KREW}.tar.gz" &&
+  tar zxvf "${KREW}.tar.gz" &&
+  ./"${KREW}" install krew
+)
 
 # Install OpenTofu (Terraform alternative)
 echo "Installing OpenTofu..."
@@ -87,10 +119,14 @@ echo "Installation Complete!"
 echo "===================================="
 echo ""
 echo "Installed tools:"
+echo "  - zsh $(zsh --version)"
+echo "  - oh-my-zsh + powerlevel10k"
 echo "  - tmux $(tmux -V)"
 echo "  - git $(git --version)"
+echo "  - Node.js $(node --version 2>/dev/null || echo 'installed via nvm')"
 echo "  - kubectl $(kubectl version --client -o json 2>/dev/null | jq -r '.clientVersion.gitVersion' || echo 'installed')"
 echo "  - kubectx and kubens"
+echo "  - krew (kubectl plugin manager)"
 echo "  - OpenTofu (terraform alias)"
 echo "  - Azure CLI $(az version --output tsv --query '\"azure-cli\"' 2>/dev/null || echo 'installed')"
 echo "  - GitHub CLI $(gh --version | head -1)"
