@@ -7,10 +7,30 @@ VM_NAME="vm-linux-devbox"
 PUBLIC_IP_NAME="pip-${VM_NAME}"
 USERNAME="azureuser"
 
-# Update NSG rule to allow SSH from current IP
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-echo "Updating NSG rule..."
-"$SCRIPT_DIR/update_nsg.sh"
+UPDATE_NSG=false
+SSH_ARGS=()
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --nsg)
+            UPDATE_NSG=true
+            shift
+            ;;
+        *)
+            SSH_ARGS+=("$1")
+            shift
+            ;;
+    esac
+done
+
+if [ "$UPDATE_NSG" = true ]; then
+    # Update NSG rule to allow SSH from current IP
+    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    echo "Updating NSG rule..."
+    "$SCRIPT_DIR/update_nsg.sh"
+else
+    echo "Skipping NSG update. Use --nsg to update NSG before connecting."
+fi
 
 echo "Getting subscription ID for '$SUBSCRIPTION_NAME'..."
 SUBSCRIPTION_ID=$(az account list --query "[?name=='$SUBSCRIPTION_NAME'].id" -o tsv)
@@ -32,4 +52,4 @@ if [ -z "$PUBLIC_IP" ]; then
 fi
 
 echo "Connecting to $USERNAME@$PUBLIC_IP..."
-ssh -p 9090 "$USERNAME@$PUBLIC_IP" "$@"
+ssh -p 9090 "$USERNAME@$PUBLIC_IP" "${SSH_ARGS[@]}"
