@@ -12,4 +12,8 @@ az vm start `
     --resource-group $RESOURCE_GROUP `
     --name $VM_NAME
 
+$ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+Write-Host "Updating NSG rule..."
+& "$ScriptDir\nsg.ps1"
+
 Write-Host "VM '$VM_NAME' started successfully."

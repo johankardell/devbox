@@ -27,7 +27,7 @@ if [ "$UPDATE_NSG" = true ]; then
     # Update NSG rule to allow SSH from current IP
     SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
     echo "Updating NSG rule..."
-    "$SCRIPT_DIR/update_nsg.sh"
+    "$SCRIPT_DIR/nsg.sh"
 else
     echo "Skipping NSG update. Use --nsg to update NSG before connecting."
 fi

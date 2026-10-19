@@ -18,4 +18,8 @@ az vm start \
     --name "$VM_NAME" \
     --subscription "$SUBSCRIPTION_ID"
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+echo "Updating NSG rule..."
+"$SCRIPT_DIR/nsg.sh"
+
 echo "VM '$VM_NAME' started successfully."

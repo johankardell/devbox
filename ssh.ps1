@@ -18,7 +18,7 @@ if ($Nsg) {
     # Update NSG rule to allow SSH from current IP
     $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
     Write-Host "Updating NSG rule..."
-    & "$ScriptDir\update_nsg.ps1"
+    & "$ScriptDir\nsg.ps1"
 } else {
     Write-Host "Skipping NSG update. Use -Nsg to update NSG before connecting."
 }
